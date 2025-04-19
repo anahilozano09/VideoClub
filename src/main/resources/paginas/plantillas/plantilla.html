@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      lang="es">
+<head th:fragment="head">
+    <meta charset="UTF-8">
+    <title>Spring Thymeleaf</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/bootstrap/css/jquery-ui.min.css}" rel="stylesheet">
+    <link th:href="@{/tema/miestilo.css}" rel="stylesheet">
+</head>
+<body>
+<header th:fragment="header">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Navbar</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Link</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Director
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" th:href="@{/director/lista-director}">Lista</a></li>
+                            <li><a class="dropdown-item" th:href="@{/director/alta-director}">Almacenar</a></li>
+
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Actor
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" th:href="@{/actor/lista-actor}">Lista</a></li>
+                            <li><a class="dropdown-item" th:href="@{/actor/alta-actor}">Almacenar</a></li>
+
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Genero
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" th:href="@{/genero/lista-genero}">Lista</a></li>
+                            <li><a class="dropdown-item" th:href="@{/genero/alta-genero}">Almacenar</a></li>
+
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Socio
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" th:href="@{/socio/lista-socio}">Lista</a></li>
+                            <li><a class="dropdown-item" th:href="@{/socio/alta-socio}">Almacenar</a></li>
+
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Película
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" th:href="@{/pelicula/lista-pelicula}">Lista</a></li>
+                            <li><a class="dropdown-item" th:href="@{/pelicula/alta-pelicula}">Almacenar</a></li>
+
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Participa
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" th:href="@{/participa/lista-participa}">Lista</a></li>
+                            <li><a class="dropdown-item" th:href="@{/participa/alta-participa}">Almacenar</a></li>
+
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Lista Espera
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" th:href="@{/listaEspera/lista-listaEspera}">Lista</a></li>
+                            <li><a class="dropdown-item" th:href="@{/listaEspera/alta-listaEspera}">Almacenar</a></li>
+
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Préstamo
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" th:href="@{/prestamo/lista-prestamo}">Lista</a></li>
+                            <li><a class="dropdown-item" th:href="@{/prestamo/alta-prestamo}">Almacenar</a></li>
+
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Devolución
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" th:href="@{/devolucion/lista-devolucion}">Lista</a></li>
+                            <li><a class="dropdown-item" th:href="@{/devolucion/alta-devolucion}">Almacenar</a></li>
+
+                        </ul>
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+    </nav>
+
+</header>
+</body>
+<footer th:fragment="footer">
+    <div class="container text-center">
+        <br/> <img th:src="@{/image/logo.jpeg}" height="150" width="500"/>
+        <p>FES ARAGON</p>
+    </div>
+    <script th:src="@{/bootstrap/js/jquery-3.6.3.js}"></script>
+    <script th:src="@{/bootstrap/js/jquery-ui.min.js}"></script>
+    <script th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{/bootstrap/js/popper.min.js}"></script>
+</footer>
+</html>

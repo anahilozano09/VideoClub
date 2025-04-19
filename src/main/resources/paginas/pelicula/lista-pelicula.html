@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      lang="es">
+<head th:replace="~{plantillas/plantilla :: head}"></head>
+<body>
+<header th:replace="~{plantillas/plantilla :: header}"></header>
+<main class="container text-center shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+    <h1 th:text="${contenido}"></h1>
+    <table th:if="${!lista.isEmpty()}" class="table table-striped table-hover table-sm">
+        <thead class="table-dark table-bordered">
+        <tr>
+            <th scope="col"> Título</th>
+            <th scope="col"> Año</th>
+            <th scope="col"> Género</th>
+            <th scope="col"> Director</th>
+            <th scope="col"> Precio</th>
+            <th scope="col"> Operaciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="ls: ${lista}">
+            <td th:text="${ls.titulo}"></td>
+            <td th:text="${ls.anio}"></td>
+            <td     th:value="${ls.genero?.id}"
+                    th:text="${ls.genero?.descripcion}"></td>
+            <td     th:value="${ls.director?.id}"
+                    th:text="${ls.director?.nombre}"></td>
+            <td th:text="${'$' + #numbers.formatDecimal(ls.precio, 1, 2)}"></td>
+            <td>
+                <a th:href="@{/pelicula/modificar-pelicula/{id} (id=${ls.id})}"
+                   class="btn btn-success">Modificar <i class="fas fa-pen-nib"
+                                                        aria-hidden="true"></i> </a>
+                <a th:href="@{/pelicula/eliminar-pelicula/{id} (id=${ls.id})}"
+                   class="btn btn-danger">Eliminar <i class="fas fa-trash-alt"
+                                                      aria-hidden="true"></i> </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+</main>
+<footer th:replace="~{plantillas/plantilla :: footer}"></footer>
+</body>
+</html>

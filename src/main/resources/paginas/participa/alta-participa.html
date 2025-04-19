@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{plantillas/plantilla :: head}"></head>
+<body>
+<header th:replace="~{plantillas/plantilla :: header}"></header>
+<main class="container text-center shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+    <h1 th:text="${contenido}"></h1>
+    <form method="post" th:action="@{/participa/guardar-participa}" th:object="${participa}">
+        <div th:if="${#fields.hasErrors('*')}" class='alert alert-danger' role="alert">
+            Verifique los siguientes inconvenientes
+            <ul>
+                <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+            </ul>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-6">
+                <div class="form-floating">
+                    <select class="form-select" th:field="*{pelicula.id}">
+                        <option value="">Seleccione una película</option>
+                        <option th:each="pel : ${pelicula}"
+                                th:value="${pel.id}"
+                                th:text="${pel.titulo}">
+                        </option>
+                    </select>
+                    <label>Película:</label>
+                </div>
+                <div class="form-floating">
+                    <select class="form-select" th:field="*{actor.id}">
+                        <option value="">Seleccione un actor</option>
+                        <option th:each="act : ${actor}"
+                                th:value="${act.id}"
+                                th:text="${act.nombreReal}">
+                        </option>
+                    </select>
+                    <label>Actor:</label>
+                </div>
+            </div>
+        </div>
+        <div class="col-8">
+            <br/>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+        <div th:if="${participa != null and participa.id != null}">
+            <input type="hidden" name="id.idPelicula" th:value="${participa.id.idPelicula}" />
+            <input type="hidden" name="id.idActor" th:value="${participa.id.idActor}" />
+        </div>
+    </form>
+</main>
+<footer th:replace="~{plantillas/plantilla :: footer}"></footer>
+</body>
+</html>

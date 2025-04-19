@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      lang="es">
+<head th:replace="~{plantillas/plantilla :: head}"></head>
+<body>
+<header th:replace="~{plantillas/plantilla :: header}"></header>
+<main class="container text-center shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+    <h1>Contenido principal</h1>
+    <h1 th:text="${contenido}"></h1>
+    <form method="post" th:action="@{/actor/guardar-actor}" th:object="${actor}" >
+        <div th:if="${#fields.hasErrors('*')}" class='alert alert-danger' role="alert">
+            Verifique los siguientes inconvenientes
+            <ul>
+                <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+            </ul>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-6">
+                <div class="form-floating">
+                    <input
+                            th:class="${#fields.hasErrors('nombreReal')}? 'form-control is-invalid':form-control"
+                            type="text" id="nombreReal"
+                            name="nombreReal"
+                            th:field="*{nombreReal}"
+                            placeholder="Jose Ramon">
+                    <label for="nombreReal">Nombre Real:</label>
+                </div>
+                <div class="form-floating">
+                    <input
+                            th:class="${#fields.hasErrors('nombreArtistico')}? 'form-control is-invalid':form-control"
+                            type="text" id="nombreArtistico"
+                            name="nombreArtistico"
+                            th:field="*{nombreArtistico}"
+                            placeholder="Jose Ramon">
+                    <label for="nombreReal">Nombre Artístico:</label>
+                </div>
+            </div>
+        </div>
+        <div class="col-8">
+            <br/>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+        <input type="hidden" name="id" th:value="${id}"/>
+    </form>
+</main>
+<footer th:replace="~{plantillas/plantilla :: footer}"></footer>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{plantillas/plantilla :: head}"></head>
+<body>
+<header th:replace="~{plantillas/plantilla :: header}"></header>
+<main class="container text-center shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+    <h1 th:text="${contenido}"></h1>
+    <form method="post" th:action="@{/pelicula/guardar-pelicula}" th:object="${pelicula}">
+        <div th:if="${#fields.hasErrors('*')}" class='alert alert-danger' role="alert">
+            Verifique los siguientes inconvenientes
+            <ul>
+                <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+            </ul>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-6">
+                <div class="form-floating">
+                    <input th:class="${#fields.hasErrors('titulo')}? 'form-control is-invalid':form-control"
+                           type="text" id="titulo" th:field="*{titulo}" placeholder="La planchada">
+                    <label for="titulo">Título:</label>
+                </div>
+                <div class="form-floating">
+                    <input th:class="${#fields.hasErrors('anio')}? 'form-control is-invalid':form-control"
+                           type="text" id="anio" th:field="*{anio}" placeholder="2000">
+                    <label for="anio">Año:</label>
+                </div>
+                <div class="form-floating">
+                    <select class="form-select" th:field="*{genero.id}">
+                        <option value="">Seleccione un género</option>
+                        <option th:each="gen : ${genero}"
+                                th:value="${gen.id}"
+                                th:text="${gen.descripcion}">
+                        </option>
+                    </select>
+                    <label>Género</label>
+                </div>
+                <div class="form-floating">
+                    <select class="form-select" th:field="*{director.id}">
+                        <option value="">Seleccione un director</option>
+                        <option th:each="dir : ${director}"
+                                th:value="${dir.id}"
+                                th:text="${dir.nombre}">
+                        </option>
+                    </select>
+                    <label>Director</label>
+                </div>
+                <div class="form-floating">
+                    <input th:class="${#fields.hasErrors('precio')}? 'form-control is-invalid':form-control"
+                           type="text" id="precio" th:field="*{precio}" placeholder="1.00">
+                    <label for="precio">Precio:</label>
+                </div>
+            </div>
+        </div>
+        <div class="col-8">
+            <br/>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+        <input type="hidden" th:field="*{id}"/>
+    </form>
+</main>
+<footer th:replace="~{plantillas/plantilla :: footer}"></footer>
+</body>
+</html>
