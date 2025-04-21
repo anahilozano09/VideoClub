@@ -160,17 +160,24 @@ public class DetallePrestamoController {
             @PathVariable("consecutivo") Long consecutivo,
             Model model) {
 
-        DetallePrestamoId id = new DetallePrestamoId(idPrestamo,idPelicula,consecutivo);
-        DetallePrestamoEntity detallePrestamo=detallePrestamoService.findById(id);
+        DetallePrestamoId id = new DetallePrestamoId(idPrestamo, idPelicula, consecutivo);
+        DetallePrestamoEntity detallePrestamo = detallePrestamoService.findById(id);
+
+        EjemplarId idEjemplar = new EjemplarId(idPelicula, consecutivo);
+        PeliculaEntity pelicula = peliculaService.findById(idPelicula);
 
         detallePrestamo.setPrestamo(prestamoService.findById(idPrestamo));
-        detallePrestamo.setPelicula(peliculaService.findById(idPelicula));
-        detallePrestamo.setEjemplar(ejemplarService.findById(new EjemplarId(idPelicula,consecutivo)));
+        detallePrestamo.setPelicula(pelicula);
+        detallePrestamo.setEjemplar(ejemplarService.findById(idEjemplar));
 
-        model.addAttribute("detallePrestamo",detallePrestamo);
+        // Solo ejemplares de la película seleccionada
+        List<EjemplarEntity> ejemplares = ejemplarService.findByPelicula(pelicula);
+
+        model.addAttribute("detallePrestamo", detallePrestamo);
         model.addAttribute("prestamos", prestamoService.findAll());
         model.addAttribute("peliculas", peliculaService.findAll());
-        model.addAttribute("ejemplares", ejemplarService.findAll());
+        model.addAttribute("ejemplares", ejemplares);
+        model.addAttribute("contenido", "Modificar Detalle de Préstamo");
 
         return "detallePrestamo/alta-detallePrestamo";
     }
