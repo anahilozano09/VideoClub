@@ -36,11 +36,13 @@
                     <label>Película:</label>
                 </div>
 
+                <input type="hidden" th:field="*{ejemplar.id.idPelicula}" />
+
                 <div class="form-floating">
-                    <select class="form-select" th:field="*{ejemplar.id}">
+                    <select class="form-select" th:field="*{ejemplar.id.consecutivo}">
                         <option value="">Seleccione un ejemplar</option>
                         <option th:each="ejem : ${ejemplar}"
-                                th:value="${ejem.id}"
+                                th:value="${ejem.id.consecutivo}"
                                 th:text="${ejem.id.consecutivo}">
                         </option>
                     </select>

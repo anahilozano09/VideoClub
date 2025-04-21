@@ -54,8 +54,10 @@ public class DetallePrestamoController {
                                    BindingResult result, Model model){
 
         // Validación básica
-        if (detallePrestamo.getPrestamo() == null || detallePrestamo.getPelicula() == null || detallePrestamo.getEjemplar() == null) {
-            result.reject("", "Debe seleccionar prestamo, pelicula y ejemplar");
+        if (detallePrestamo.getPrestamo() == null || detallePrestamo.getPelicula() == null ||
+                detallePrestamo.getEjemplar() == null || detallePrestamo.getEjemplar().getId() == null) {
+            result.reject("", "Debe seleccionar préstamo, película y ejemplar válidos");
+            return "detallePrestamo/alta-detallePrestamo";
         }
 
         if (result.hasErrors()) {
@@ -65,9 +67,14 @@ public class DetallePrestamoController {
             return "detallePrestamo/alta-detallePrestamo";
         }
 
+        Long idPrestamo = detallePrestamo.getPrestamo().getId();
+        Long idPelicula = detallePrestamo.getPelicula().getId();
+        Long consecutivo = detallePrestamo.getEjemplar().getConsecutivo();
+
         PrestamoEntity prestamo = prestamoService.findById(detallePrestamo.getPrestamo().getId());
         PeliculaEntity pelicula = peliculaService.findById(detallePrestamo.getPelicula().getId());
-        EjemplarEntity ejemplar = ejemplarService.findById(detallePrestamo.getEjemplar().getId());
+        EjemplarId idEjemplar = new EjemplarId(idPelicula, consecutivo);
+        EjemplarEntity ejemplar = ejemplarService.findById(idEjemplar);
 
         if (prestamo == null || pelicula == null || ejemplar == null) {
             result.reject("", "Prestamo, pelicula o ejemplar no encontrados");
@@ -131,7 +138,7 @@ public class DetallePrestamoController {
             detallePrestamoService.save(detallePrestamo);
         }
         model.addAttribute("contenido","Se almaceno con exito");
-        return "participa/alta-participa";
+        return "detallePrestamo/alta-detallePrestamo";
     }
 
     @GetMapping("lista-detallePrestamo")
