@@ -28,7 +28,7 @@
                 <div class="form-floating">
                     <select class="form-select" th:field="*{pelicula.id}">
                         <option value="">Seleccione una película</option>
-                        <option th:each="pel : ${pelicula}"
+                        <option th:each="pel : ${peliculas}"
                                 th:value="${pel.id}"
                                 th:text="${pel.titulo}">
                         </option>
@@ -41,9 +41,9 @@
                 <div class="form-floating">
                     <select class="form-select" th:field="*{ejemplar.id.consecutivo}">
                         <option value="">Seleccione un ejemplar</option>
-                        <option th:each="ejem : ${ejemplar}"
+                        <option th:each="ejem : ${ejemplares}"
                                 th:value="${ejem.id.consecutivo}"
-                                th:text="${ejem.id.consecutivo}">
+                                th:text="${'Ejemplar #' + ejem.id.consecutivo + ' - ' + ejem.pelicula.titulo}">
                         </option>
                     </select>
                     <label>Ejemplar:</label>

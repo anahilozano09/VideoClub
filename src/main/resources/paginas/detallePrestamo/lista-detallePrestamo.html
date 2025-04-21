@@ -35,10 +35,11 @@
             <td     th:value="${ls.ejemplar?.id}"
                     th:text="${ls.ejemplar?.consecutivo}"></td>
             <td>
+
                 <a th:href="@{/detallePrestamo/modificar-detallePrestamo/{idPrestamo}/{idPelicula}/{consecutivo}
                 (idPrestamo=${ls.id.idPrestamo}, idPelicula=${ls.ejemplar.id.idPelicula}, consecutivo=${ls.ejemplar.id.consecutivo})}"
-                   class="btn btn-success">Modificar <i class="fas fa-pen-nib"
-                                                                                                                                                                            aria-hidden="true"></i> </a>
+                   class="btn btn-success">Modificar <i class="fas fa-trash-alt"
+                                                      aria-hidden="true"></i> </a>
                 <a th:href="@{/detallePrestamo/eliminar-detallePrestamo/{idPrestamo}/{idPelicula}/{consecutivo}
                 (idPrestamo=${ls.id.idPrestamo}, idPelicula=${ls.ejemplar.id.idPelicula}, consecutivo=${ls.ejemplar.id.consecutivo})}"
                    class="btn btn-danger">Eliminar <i class="fas fa-trash-alt"

@@ -7,6 +7,10 @@ import mx.unam.aragon.model.entity.detallePrestamo.DetallePrestamoEntity;
 import mx.unam.aragon.model.entity.detallePrestamo.DetallePrestamoId;
 import mx.unam.aragon.model.entity.ejemplar.EjemplarEntity;
 import mx.unam.aragon.model.entity.ejemplar.EjemplarId;
+import mx.unam.aragon.model.entity.listaEspera.ListaEsperaEntity;
+import mx.unam.aragon.model.entity.listaEspera.ListaEsperaId;
+import mx.unam.aragon.model.entity.participa.ParticipaEntity;
+import mx.unam.aragon.model.entity.participa.ParticipaId;
 import mx.unam.aragon.service.detallePrestamo.DetallePrestamoService;
 import mx.unam.aragon.service.ejemplar.EjemplarService;
 import mx.unam.aragon.service.pelicula.PeliculaService;
@@ -42,8 +46,9 @@ public class DetallePrestamoController {
         DetallePrestamoEntity detallePrestamo = new DetallePrestamoEntity();
         model.addAttribute("detallePrestamo",detallePrestamo);
         model.addAttribute("prestamos", prestamoService.findAll());
-        model.addAttribute("pelicula", peliculaService.findAll());
-        model.addAttribute("ejemplar", ejemplarService.findAll());
+        model.addAttribute("peliculas", peliculaService.findAll());
+
+        model.addAttribute("ejemplares", ejemplarService.findAll());
         model.addAttribute("contenido","Alta Detalle de Prestamo");
         return "detallePrestamo/alta-detallePrestamo";
     }
@@ -53,11 +58,22 @@ public class DetallePrestamoController {
     public String guardarDetallePrestamo(@Valid @ModelAttribute(value = "detallePrestamo") DetallePrestamoEntity detallePrestamo,
                                    BindingResult result, Model model){
 
-        // Validación básica
         if (detallePrestamo.getPrestamo() == null || detallePrestamo.getPelicula() == null ||
                 detallePrestamo.getEjemplar() == null || detallePrestamo.getEjemplar().getId() == null) {
             result.reject("", "Debe seleccionar préstamo, película y ejemplar válidos");
-            return "detallePrestamo/alta-detallePrestamo";
+        }
+
+        Long idPrestamo = detallePrestamo.getPrestamo().getId();
+        Long idPelicula = detallePrestamo.getPelicula().getId();
+        Long consecutivo = detallePrestamo.getEjemplar().getId().getConsecutivo();
+
+        PrestamoEntity prestamo = prestamoService.findById(idPrestamo);
+        PeliculaEntity pelicula = peliculaService.findById(idPelicula);
+        EjemplarId idEjemplar = new EjemplarId(idPelicula, consecutivo);
+        EjemplarEntity ejemplar = ejemplarService.findById(idEjemplar);
+
+        if (prestamo == null || pelicula == null || ejemplar == null) {
+            result.reject("", "Prestamo, película o ejemplar no encontrados");
         }
 
         if (result.hasErrors()) {
@@ -67,67 +83,16 @@ public class DetallePrestamoController {
             return "detallePrestamo/alta-detallePrestamo";
         }
 
-        Long idPrestamo = detallePrestamo.getPrestamo().getId();
-        Long idPelicula = detallePrestamo.getPelicula().getId();
-        Long consecutivo = detallePrestamo.getEjemplar().getConsecutivo();
+        DetallePrestamoId nuevoId = new DetallePrestamoId(idPrestamo, idPelicula, consecutivo);
+        boolean esModificacion = detallePrestamo.getId() != null;
 
-        PrestamoEntity prestamo = prestamoService.findById(detallePrestamo.getPrestamo().getId());
-        PeliculaEntity pelicula = peliculaService.findById(detallePrestamo.getPelicula().getId());
-        EjemplarId idEjemplar = new EjemplarId(idPelicula, consecutivo);
-        EjemplarEntity ejemplar = ejemplarService.findById(idEjemplar);
-
-        if (prestamo == null || pelicula == null || ejemplar == null) {
-            result.reject("", "Prestamo, pelicula o ejemplar no encontrados");
-            return "detallePrestamo/alta-detallePrestamo";
-        }
-
-        // Caso de modificación
-        if (detallePrestamo.getId() != null) {
-            DetallePrestamoId idOriginal = detallePrestamo.getId();
-            DetallePrestamoEntity existente = detallePrestamoService.findById(idOriginal);
-
-            if (existente == null) {
-                return "detallePrestamo/lista-detallePrestamo";
-            }
-
-            boolean cambioPrestamo = !prestamo.getId().equals(idOriginal.getIdPrestamo());
-            boolean cambioPelicula = !pelicula.getId().equals(idOriginal.getIdPelicula());
-            boolean cambioEjemplar = !ejemplar.getId().equals(idOriginal.getConsecutivo());
-
-            if (cambioPrestamo || cambioPelicula || cambioEjemplar) {
-                // Crear nuevo ID
-                DetallePrestamoId nuevoId = new DetallePrestamoId(prestamo.getId(), pelicula.getId(), ejemplar.getConsecutivo());
-
-                if (detallePrestamoService.existsById(nuevoId)) {
-                    result.reject("", "Ya existe esta combinación de película y actor");
-                    return "detallePrestamo/alta-detallePrestamo";
-                }
-
-                // Eliminar original y crear nueva
-                detallePrestamoService.deleteById(idOriginal);
-
-                DetallePrestamoEntity nuevoDetallePrestamo = new DetallePrestamoEntity();
-                nuevoDetallePrestamo.setId(nuevoId);
-                nuevoDetallePrestamo.setPrestamo(prestamo);
-                nuevoDetallePrestamo.setPelicula(pelicula);
-                nuevoDetallePrestamo.setEjemplar(ejemplar);
-                // Copiar otros atributos si existen
-                // nuevaParticipa.setOtrosDatos(existente.getOtrosDatos());
-
-                detallePrestamoService.save(detallePrestamo);
-            } else {
-                // Actualizar existente
-                existente.setPrestamo(prestamo);
-                existente.setPelicula(pelicula);
-                existente.setEjemplar(ejemplar);
-                detallePrestamoService.save(existente);
-            }
-        } else {
-            // Alta nueva
-            DetallePrestamoId nuevoId = new DetallePrestamoId(prestamo.getId(), pelicula.getId(), ejemplar.getConsecutivo());
-
+        if (!esModificacion) {
             if (detallePrestamoService.existsById(nuevoId)) {
-                result.reject("", "Ya existe esta combinación de prestamo, película y ejemplar");
+                result.reject("", "Ya existe esta combinación de préstamo, película y ejemplar");
+                model.addAttribute("prestamos", prestamoService.findAll());
+                model.addAttribute("peliculas", peliculaService.findAll());
+                model.addAttribute("ejemplares", ejemplarService.findByPelicula(pelicula));
+                model.addAttribute("contenido", "Alta Detalle de Préstamo");
                 return "detallePrestamo/alta-detallePrestamo";
             }
 
@@ -136,7 +101,37 @@ public class DetallePrestamoController {
             detallePrestamo.setPelicula(pelicula);
             detallePrestamo.setEjemplar(ejemplar);
             detallePrestamoService.save(detallePrestamo);
+        } else {
+            DetallePrestamoId idOriginal = detallePrestamo.getId();
+
+            if (!idOriginal.equals(nuevoId)) {
+                // Si cambia la combinación de claves primarias
+                if (detallePrestamoService.existsById(nuevoId)) {
+                    result.reject("", "Ya existe esta combinación de préstamo, película y ejemplar");
+                    model.addAttribute("prestamos", prestamoService.findAll());
+                    model.addAttribute("peliculas", peliculaService.findAll());
+                    model.addAttribute("ejemplares", ejemplarService.findByPelicula(pelicula));
+                    model.addAttribute("contenido", "Modificar Detalle de Préstamo");
+                    return "detallePrestamo/alta-detallePrestamo";
+                }
+
+                // Borrar y guardar como nuevo
+                detallePrestamoService.deleteById(idOriginal);
+                DetallePrestamoEntity nuevo = new DetallePrestamoEntity();
+                nuevo.setId(nuevoId);
+                nuevo.setPrestamo(prestamo);
+                nuevo.setPelicula(pelicula);
+                nuevo.setEjemplar(ejemplar);
+                detallePrestamoService.save(nuevo);
+            } else {
+                // Es la misma combinación, solo actualiza
+                detallePrestamo.setPrestamo(prestamo);
+                detallePrestamo.setPelicula(pelicula);
+                detallePrestamo.setEjemplar(ejemplar);
+                detallePrestamoService.save(detallePrestamo);
+            }
         }
+
         model.addAttribute("contenido","Se almaceno con exito");
         return "detallePrestamo/alta-detallePrestamo";
     }
@@ -158,27 +153,25 @@ public class DetallePrestamoController {
         return "redirect:/detallePrestamo/lista-detallePrestamo";
 
     }
-    @GetMapping("modificar-detallePrestamo/{idPrestamo}/{idPelicula}/{consecutivo}")
-    public String mdificar(@PathVariable("idPrestamo") Long idPrestamo,
-                           @PathVariable("idPelicula") Long idPelicula,
-                           @PathVariable("consecutivo") Long consecutivo,
-                           Model model){
+    @GetMapping("/modificar-detallePrestamo/{idPrestamo}/{idPelicula}/{consecutivo}")
+    public String modificar(
+            @PathVariable("idPrestamo") Long idPrestamo,
+            @PathVariable("idPelicula") Long idPelicula,
+            @PathVariable("consecutivo") Long consecutivo,
+            Model model) {
 
-        DetallePrestamoId id = new DetallePrestamoId(idPrestamo, idPelicula, consecutivo);
+        DetallePrestamoId id = new DetallePrestamoId(idPrestamo,idPelicula,consecutivo);
         DetallePrestamoEntity detallePrestamo=detallePrestamoService.findById(id);
-
-        EjemplarId idEjemplar = new EjemplarId(idPelicula, consecutivo);
 
         detallePrestamo.setPrestamo(prestamoService.findById(idPrestamo));
         detallePrestamo.setPelicula(peliculaService.findById(idPelicula));
-        detallePrestamo.setEjemplar(ejemplarService.findById(idEjemplar));
+        detallePrestamo.setEjemplar(ejemplarService.findById(new EjemplarId(idPelicula,consecutivo)));
 
         model.addAttribute("detallePrestamo",detallePrestamo);
         model.addAttribute("prestamos", prestamoService.findAll());
-        model.addAttribute("pelicula", peliculaService.findAll());
-        model.addAttribute("ejemplar", ejemplarService.findAll());
-        model.addAttribute("contenido","Modificar ejemplar");
-        return "detallePrestamo/alta-detallePrestamo";
+        model.addAttribute("peliculas", peliculaService.findAll());
+        model.addAttribute("ejemplares", ejemplarService.findAll());
 
+        return "detallePrestamo/alta-detallePrestamo";
     }
 }
