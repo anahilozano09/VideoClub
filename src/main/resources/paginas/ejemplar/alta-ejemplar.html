@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{plantillas/plantilla :: head}"></head>
+<body>
+<header th:replace="~{plantillas/plantilla :: header}"></header>
+<main class="container text-center shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+    <h1 th:text="${contenido}"></h1>
+    <form method="post" th:action="@{/ejemplar/guardar-ejemplar}" th:object="${ejemplar}">
+        <div th:if="${#fields.hasErrors('*')}" class='alert alert-danger' role="alert">
+            Verifique los siguientes inconvenientes
+            <ul>
+                <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+            </ul>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-6">
+                <div class="form-floating">
+                    <select class="form-select" th:field="*{pelicula.id}" required>
+                        <option value="">Seleccione una película</option>
+                        <option th:each="pel : ${pelicula}"
+                                th:value="${pel.id}"
+                                th:text="${pel.titulo}">
+                        </option>
+                    </select>
+                    <label>Película:</label>
+                </div>
+                <div class="form-floating">
+                    <input type="number" class="form-control"
+                           th:field="*{consecutivo}"
+                           min="1" required>
+                    <label>Número Consecutivo:</label>
+                </div>
+            </div>
+        </div>
+        <div class="col-8">
+            <br/>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+
+    </form>
+</main>
+<footer th:replace="~{plantillas/plantilla :: footer}"></footer>
+</body>
+</html>
