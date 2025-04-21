@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{plantillas/plantilla :: head}"></head>
+<body>
+<header th:replace="~{plantillas/plantilla :: header}"></header>
+<main class="container text-center shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+    <h1 th:text="${contenido}"></h1>
+    <form method="post" th:action="@{/detallePrestamo/guardar-detallePrestamo}" th:object="${detallePrestamo}">
+        <div th:if="${#fields.hasErrors('*')}" class='alert alert-danger' role="alert">
+            Verifique los siguientes inconvenientes
+            <ul>
+                <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+            </ul>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-6">
+                <div class="form-floating">
+                    <select class="form-select" name="prestamo.id" id="prestamo" th:field="*{prestamo.id}">
+                        <option value="">Seleccione un préstamo</option>
+                        <option th:each="pres : ${prestamos}"
+                                th:value="${pres.id}"
+                                th:text="${'Préstamo #' + pres.id + ' - ' + pres.socio.nombre + ' (' + #temporals.format(pres.fecha, 'dd/MM/yyyy') + ')'}"
+                                th:selected="${prestamo != null && prestamo.id == pres.id}">
+                        </option>
+                    </select>
+                    <label for="prestamo">Préstamo asociado:</label>
+                </div>
+                <div class="form-floating">
+                    <select class="form-select" th:field="*{pelicula.id}">
+                        <option value="">Seleccione una película</option>
+                        <option th:each="pel : ${pelicula}"
+                                th:value="${pel.id}"
+                                th:text="${pel.titulo}">
+                        </option>
+                    </select>
+                    <label>Película:</label>
+                </div>
+
+                <div class="form-floating">
+                    <select class="form-select" th:field="*{ejemplar.id}">
+                        <option value="">Seleccione un ejemplar</option>
+                        <option th:each="ejem : ${ejemplar}"
+                                th:value="${ejem.id}"
+                                th:text="${ejem.id.consecutivo}">
+                        </option>
+                    </select>
+                    <label>Ejemplar:</label>
+                </div>
+            </div>
+        </div>
+        <div class="col-8">
+            <br/>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+        <div th:if="${detallePrestamo != null and detallePrestamo.id != null}">
+            <input type="hidden" name="id.idPrestamo" th:value="${detallePrestamo.id.idPrestamo}" />
+            <input type="hidden" name="id.idPelicula" th:value="${detallePrestamo.id.idPelicula}" />
+            <input type="hidden" name="id.consecutivo" th:value="${detallePrestamo.id.consecutivo}" />
+        </div>
+    </form>
+</main>
+<footer th:replace="~{plantillas/plantilla :: footer}"></footer>
+</body>
+</html>

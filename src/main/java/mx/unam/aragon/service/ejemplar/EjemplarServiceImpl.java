@@ -1,5 +1,6 @@
 package mx.unam.aragon.service.ejemplar;
 
+import mx.unam.aragon.model.entity.PeliculaEntity;
 import mx.unam.aragon.model.entity.ejemplar.EjemplarEntity;
 import mx.unam.aragon.model.entity.ejemplar.EjemplarId;
 import mx.unam.aragon.repository.EjemplarRepository;
@@ -43,5 +44,14 @@ public class EjemplarServiceImpl implements EjemplarService{
     @Override
     public boolean existsById(EjemplarId id) {
         return ejemplarRepository.existsById(id);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<EjemplarEntity> findByPelicula(PeliculaEntity pelicula) {
+        List<EjemplarEntity> todos = ejemplarRepository.findAll();
+        return todos.stream()
+                .filter(e -> e.getPelicula().getId().equals(pelicula.getId()))
+                .toList();
     }
 }
