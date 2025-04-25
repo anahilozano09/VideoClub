@@ -1,13 +1,16 @@
 package mx.unam.aragon.controller.director;
 
 import jakarta.validation.Valid;
+import mx.unam.aragon.converter.EnteroConverter;
 import mx.unam.aragon.model.entity.DirectorEntity;
 import mx.unam.aragon.service.director.DirectorService;
+import mx.unam.aragon.validator.NombreValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -18,6 +21,9 @@ import java.util.List;
 public class DirectorController {
     @Autowired
     DirectorService directorService;
+
+    @Autowired
+    NombreValidator nombreValidator;
 
     /// /director/alta-director
     @GetMapping("alta-director")
@@ -65,6 +71,13 @@ public class DirectorController {
         model.addAttribute("contenido","Modificar director");
         return "director/alta-director";
 
+    }
+
+    @InitBinder("director")
+    public void convertir(WebDataBinder binder){
+        binder.registerCustomEditor(Integer.class,
+                "dato", new EnteroConverter());
+        binder.addValidators(nombreValidator);
     }
 
 }

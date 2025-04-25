@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{plantillas/plantilla :: head}"></head>
+<body>
+<header th:replace="~{plantillas/plantilla :: header}"></header>
+<main class="container text-center shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+    <h1 th:text="${contenido}"></h1>
+    <form method="post" th:action="@{/pago/guardar-pago}" th:object="${pago}">
+        <div th:if="${#fields.hasErrors('*')}" class='alert alert-danger' role="alert">
+            Verifique los siguientes inconvenientes
+            <ul>
+                <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+            </ul>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-6">
+                <div class="form-floating">
+                    <select class="form-select" th:field="*{tipo.id}">
+                        <option value="">Seleccione un tipo de pago</option>
+                        <option th:each="tip : ${tipoPago}"
+                                th:value="${tip.id}"
+                                th:text="${tip.nombre}">
+                        </option>
+                    </select>
+                    <label>Tipo de Pago:</label>
+                </div>
+                <div class="form-floating">
+                    <input
+                            th:class="${#fields.hasErrors('tarjeta')}? 'form-control is-invalid':form-control"
+                            type="text" id="tarjeta"
+                            name="tarjeta"
+                            th:field="*{tarjeta}"
+                            placeholder="0" required>
+                    <label for="tarjeta">Número de Tarjeta:</label>
+                </div>
+                <div class="form-floating">
+                    <input
+                            th:class="${#fields.hasErrors('cantidad')}? 'form-control is-invalid':form-control"
+                            type="text" id="cantidad"
+                            name="cantidad"
+                            th:field="*{cantidad}"
+                            placeholder="0" required>
+                    <label for="cantidad">Cantidad de pago:</label>
+                </div>
+            </div>
+        </div>
+        <div class="col-8">
+            <br/>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+        <input type="hidden" th:field="*{id}"/>
+    </form>
+    <script>
+        document.querySelector('[th\\:field="*{tipoPago}"]').addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const digitos = selectedOption.text.match(/\((\d+) dígitos\)/)[1];
+            document.querySelector('[th\\:field="*{tarjeta}"]').nextElementSibling.querySelector('span').textContent = digitos;
+        });
+    </script>
+</main>
+<footer th:replace="~{plantillas/plantilla :: footer}"></footer>
+</body>
+</html>

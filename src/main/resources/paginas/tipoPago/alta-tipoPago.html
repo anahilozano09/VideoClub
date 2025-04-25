@@ -7,7 +7,7 @@
 <main class="container text-center shadow-lg p-3 mb-5 bg-body-tertiary rounded">
     <h1>Contenido principal</h1>
     <h1 th:text="${contenido}"></h1>
-    <form method="post" th:action="@{/director/guardar-director}" th:object="${director}" >
+    <form method="post" th:action="@{/tipoPago/guardar-tipoPago}" th:object="${tipoPago}" >
         <div th:if="${#fields.hasErrors('*')}" class='alert alert-danger' role="alert">
             Verifique los siguientes inconvenientes
             <ul>
@@ -24,15 +24,6 @@
                             th:field="*{nombre}"
                             placeholder="Jose Ramon">
                     <label for="nombre">Nombre:</label>
-                </div>
-                <div class="form-floating">
-                    <input
-                            th:class="${#fields.hasErrors('dato')}? 'form-control is-invalid':form-control"
-                            type="text" id="dato"
-                            name="dato"
-                            th:field="*{dato}"
-                            placeholder="Jose Ramon">
-                    <label for="nombre">Dato:</label>
                 </div>
             </div>
         </div>

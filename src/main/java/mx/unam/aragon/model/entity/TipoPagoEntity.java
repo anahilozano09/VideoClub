@@ -1,29 +1,23 @@
 package mx.unam.aragon.model.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity(name = "director")
+@Entity(name = "tipo_pago")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class DirectorEntity {
+public class TipoPagoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_director")
+    @Column(name = "id_tipo")
     private Long id;
 
-    @Column(name="nombre")
-    @NotBlank
+    @Column(name = "nombre")
     private String nombre;
 
-    @Transient
-    private Integer dato;
-
-
+    @Column(name = "digitos")
+    private Integer digitos;
 }
