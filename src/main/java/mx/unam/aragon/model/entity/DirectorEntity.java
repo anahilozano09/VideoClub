@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import mx.unam.aragon.validator.NoEspacioNoVacio;
 
 @Entity(name = "director")
 @Data
@@ -19,11 +20,14 @@ public class DirectorEntity {
     private Long id;
 
     @Column(name="nombre")
-    @NotBlank
+    @NoEspacioNoVacio
     private String nombre;
 
     @Transient
     private Integer dato;
+
+
+
 
 
 }
